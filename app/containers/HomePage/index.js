@@ -5,14 +5,15 @@
  *
  */
 
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import React from "react";
+import StatusTableContainer from "../StatusTableContainer";
+import Navigation from "../../components/Navigation";
 
 export default function HomePage() {
   return (
-    <h1>
-      <FormattedMessage {...messages.header} />
-    </h1>
+    <>
+      <Navigation />
+      <StatusTableContainer />
+    </>
   );
 }
