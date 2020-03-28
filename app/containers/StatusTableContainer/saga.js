@@ -2,7 +2,7 @@ import { put, call, takeLatest } from "redux-saga/effects";
 import { FETCH_SERVER_DATA } from "./constants";
 import { fetchDataSuccessAction, fetchDataFailureAction } from "./actions";
 
-function fetchRemoteAPIGenerator(country) {
+function fetchRemoteAPIGenerator(country = "Canada") {
   return fetch(
     `https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=${country}`,
     {
@@ -15,13 +15,45 @@ function fetchRemoteAPIGenerator(country) {
   ).then(res => res.json());
 }
 
-function* fetchDataSaga() {
+function verifyLocalStorage(country) {
+  const EXPIRY_HOURS = 1;
+
+  if (localStorage && localStorage.getItem(country)) {
+    const localData = JSON.parse(localStorage.getItem(country));
+    const lastCheckedTime = new Date(localData.lastChecked).getTime();
+    const timeElapsed = (Date.now() - lastCheckedTime) / 1000 / 60 / 60;
+    if (timeElapsed < EXPIRY_HOURS) {
+      console.log(
+        "Get data from storage, passed time: " +
+          timeElapsed.toFixed(2) +
+          ", expiry time: " +
+          EXPIRY_HOURS,
+      );
+      // if time passed is less than the expiry time, get data from localStorage
+      return localData;
+    }
+  }
+
+  return null;
+}
+
+function* fetchDataSaga(action) {
+  // first check local saved data
+  const localResult = verifyLocalStorage(action.payload);
+  if (localResult) {
+    yield put(fetchDataSuccessAction(localResult));
+    return;
+  }
+
   try {
-    const result = yield call(fetchRemoteAPIGenerator, "China");
+    const result = yield call(fetchRemoteAPIGenerator, action.payload);
     if (result.error) {
       throw new Error("API endpoint returns error " + result.message);
     }
     yield put(fetchDataSuccessAction(result.data));
+    if (localStorage) {
+      yield localStorage.setItem(action.payload, JSON.stringify(result.data));
+    }
   } catch (e) {
     yield put(fetchDataFailureAction(e));
   }

@@ -10,9 +10,10 @@ import {
   FETCH_SERVER_DATA_SUCCESS,
 } from "./constants";
 
-export function fetchDataAction() {
+export function fetchDataAction(payload) {
   return {
     type: FETCH_SERVER_DATA,
+    payload,
   };
 }
 

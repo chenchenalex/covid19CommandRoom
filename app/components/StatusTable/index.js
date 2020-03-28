@@ -9,6 +9,8 @@ import PropTypes from "prop-types";
 // import PropTypes from 'prop-types';
 import styled from "styled-components";
 
+const NUM_TO_SHOW = 200;
+
 const Container = styled.div`
   margin: 20px auto;
   max-width: 1000px;
@@ -34,23 +36,24 @@ const StyledTable = styled.table`
 
 function StatusTable({ APIData }) {
   const tableRowData = APIData
-    ? APIData.statistics.map(stat => (
+    ? APIData.statistics.slice(0, NUM_TO_SHOW).map(stat => (
         <tr key={stat.keyId}>
-          <td>{stat.province}</td>
+          <td>{stat.province || stat.country}</td>
           <td>{stat.confirmed}</td>
           <td className="color-red">{stat.deaths}</td>
           <td className="color-green">{stat.recovered}</td>
         </tr>
       ))
     : null;
+  const country = APIData ? APIData.statistics[0].country : "Unknown";
 
   return (
     <Container>
-      <h1>Country here</h1>
+      <h1>{country}</h1>
       <StyledTable>
         <thead>
           <tr>
-            <td>Province</td>
+            <td>Province / Country</td>
             <td>Confirmed Cases</td>
             <td>Death cases</td>
             <td>Recovered</td>
