@@ -16,7 +16,7 @@ import { useInjectReducer } from "utils/injectReducer";
 import makeSelectStatusTableContainer from "./selectors";
 import reducer from "./reducer";
 import saga from "./saga";
-import { fetchDataAction } from "./actions";
+import { fetchDataAction, orderByAction } from "./actions";
 import StatusTable from "../../components/StatusTable";
 
 const StyledContainer = Styled.div`
@@ -29,6 +29,7 @@ const StyledPrimaryButton = Styled.button`
   color: white;  
   height: 40px;
   border: 0;
+  cursor: pointer;
   border-radius: 3px;
 `;
 
@@ -36,6 +37,10 @@ const StyledInput = Styled.input`
   height: 40px;
   padding: 0 10px;
   border: 1px solid black;
+`;
+
+const LastCheckedTime = Styled.div`
+  margin-top: 20px;
 `;
 
 export function StatusTableContainer({ ...props }) {
@@ -57,6 +62,9 @@ export function StatusTableContainer({ ...props }) {
       <StyledPrimaryButton onClick={() => props.fetchData(currentCountry)}>
         Check now!
       </StyledPrimaryButton>
+      <LastCheckedTime>
+        Last updated time: {new Date(props.APIData.lastChecked).toString()}
+      </LastCheckedTime>
       <StatusTable {...props} />
     </StyledContainer>
   );
@@ -64,6 +72,10 @@ export function StatusTableContainer({ ...props }) {
 
 StatusTableContainer.propTypes = {
   fetchData: PropTypes.func.isRequired,
+  APIData: PropTypes.shape({
+    statistics: PropTypes.array.isRequired,
+    lastChecked: PropTypes.string,
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -73,6 +85,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     fetchData: country => dispatch(fetchDataAction(country)),
+    reorderData: orderInfo => dispatch(orderByAction(orderInfo)),
   };
 }
 

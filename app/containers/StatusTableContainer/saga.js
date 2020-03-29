@@ -26,8 +26,9 @@ function verifyLocalStorage(country) {
       console.log(
         "Get data from storage, passed time: " +
           timeElapsed.toFixed(2) +
-          ", expiry time: " +
-          EXPIRY_HOURS,
+          " hour, expiry time: " +
+          EXPIRY_HOURS +
+          " hour",
       );
       // if time passed is less than the expiry time, get data from localStorage
       return localData;
