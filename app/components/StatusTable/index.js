@@ -31,7 +31,7 @@ const StyledTable = styled.table`
   tr {
     &:hover {
       td {
-        background: darkred;
+        background: #b50202;
         color: white;
       }
     }
@@ -46,7 +46,7 @@ const StyledTable = styled.table`
   }
 `;
 
-function StatusTable({ APIData, reorderData }) {
+function StatusTable({ APIData, reorderData, currentCountry }) {
   const INITIAL_TOTAL = {
     confirmed: 0,
     recovered: 0,
@@ -65,14 +65,13 @@ function StatusTable({ APIData, reorderData }) {
     ? APIData.statistics.slice(0, NUM_TO_SHOW).map(stat => (
         <tr key={stat.keyId}>
           <td>{stat.province || stat.country}</td>
+          <td>{stat.city}</td>
           <td>{stat.confirmed}</td>
           <td className="color-red">{stat.deaths}</td>
           <td className="color-green">{stat.recovered}</td>
         </tr>
       ))
     : null;
-  const country =
-    APIData.statistics.length > 0 ? APIData.statistics[0].country : "Unknown";
 
   const callReorderData = e => {
     const orderByState = APIData.orderBy;
@@ -92,7 +91,7 @@ function StatusTable({ APIData, reorderData }) {
 
   return (
     <Container>
-      <h1>{country}</h1>
+      <h1>{currentCountry}</h1>
       <StyledTable margin={"0 0 30px 0"}>
         <thead>
           <tr>
@@ -113,6 +112,7 @@ function StatusTable({ APIData, reorderData }) {
         <thead>
           <tr>
             <StatusTableHeading>Province / Country</StatusTableHeading>
+            <StatusTableHeading>City</StatusTableHeading>
             <StatusTableHeading
               onClick={callReorderData}
               clickable
@@ -148,6 +148,7 @@ function StatusTable({ APIData, reorderData }) {
 StatusTable.propTypes = {
   APIData: PropTypes.object.isRequired,
   reorderData: PropTypes.func.isRequired,
+  currentCountry: PropTypes.string.isRequired,
 };
 
 export default StatusTable;

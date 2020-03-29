@@ -4,11 +4,16 @@ import styled from "styled-components";
 
 const StyledTableHeading = styled.th`
   border: 1px solid black;
-  background: darkred;
+  background: #b50202;
   position: relative;
   color: white;
   height: 40px;
   cursor: ${props => (props.clickable ? "pointer" : null)};
+
+  &:hover {
+    ${props => props.clickable && "background-color: darkred"}
+  }
+
   span {
     position: absolute;
     right: 10px;

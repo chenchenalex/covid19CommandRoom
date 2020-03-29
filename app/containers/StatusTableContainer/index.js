@@ -25,7 +25,7 @@ const StyledContainer = Styled.div`
 `;
 
 const StyledPrimaryButton = Styled.button`
-  background-color: darkred;
+  background-color: #b50202;
   color: white;  
   height: 40px;
   border: 0;
@@ -47,6 +47,7 @@ export function StatusTableContainer({ ...props }) {
   useInjectReducer({ key: "statusTableContainer", reducer });
   useInjectSaga({ key: "statusTableContainer", saga });
   const [currentCountry, setCountry] = useState("Australia");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     props.fetchData(currentCountry);
@@ -59,13 +60,18 @@ export function StatusTableContainer({ ...props }) {
         value={currentCountry}
         onChange={e => setCountry(e.target.value)}
       />
-      <StyledPrimaryButton onClick={() => props.fetchData(currentCountry)}>
+      <StyledPrimaryButton
+        onClick={() => {
+          props.fetchData(currentCountry);
+          setSearchTerm(currentCountry);
+        }}
+      >
         Check now!
       </StyledPrimaryButton>
       <LastCheckedTime>
-        Last updated time: {new Date(props.APIData.lastChecked).toString()}
+        Last updated: {new Date(props.APIData.lastChecked).toString()}
       </LastCheckedTime>
-      <StatusTable {...props} />
+      <StatusTable {...props} currentCountry={searchTerm} />
     </StyledContainer>
   );
 }
